@@ -255,7 +255,7 @@ int main(int argc, char **argv) {
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-    glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, 5, 5, 5, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, width, height, 1, 0, GL_RGBA, GL_FLOAT, NULL);
 
     glBindFramebuffer(GL_FRAMEBUFFER, fboId);
     glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_3D, fluid, 0, 0);
@@ -268,9 +268,23 @@ int main(int argc, char **argv) {
 
     //====================================
 
+    int init = 1;
+
     Controller* controller = new Controller(); // a Controller to bind the ESCAPE key to the Window
 
-    int framerate = 60/1000;
+    controller->bind(GLFW_KEY_ESCAPE, [&window]() {
+
+        glfwSetWindowShouldClose(window, true);
+
+    });
+
+    controller->bind(GLFW_KEY_E, [&init]() {
+
+        init = 0;
+
+    });
+
+    int framerate = 1000/60;
 
     while(!glfwWindowShouldClose(window))
     {
@@ -297,7 +311,14 @@ int main(int argc, char **argv) {
 
                 glBindVertexArray(idVAO);
 
-                    for(int layer=0; layer < 5; layer++)
+                    envoyer1I("init", fluidShader->getProgramID(), init);
+
+                    envoyer1I("fluid", fluidShader->getProgramID(), 0);
+
+                    glActiveTexture(GL_TEXTURE0);
+                    glBindTexture(GL_TEXTURE_3D, fluid);
+
+                    for(int layer=0; layer < 1; layer++)
                     {
 
                         envoyer1I("layer", fluidShader->getProgramID(), layer);

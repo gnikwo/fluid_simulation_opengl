@@ -1,12 +1,14 @@
-#version 430
+#version 430 core
 
-uniform sample3D fluid;
+uniform sampler3D fluid;
 
-layout(location=0) out vec4 out_color; //GL_COLOR_ATTACHMENT0
+in vec2 pos;
+
+out vec4 out_color;
 
 void main()
 {
 
-    out_color = vec4(1.0,0.0,0.0,1.0);
+    out_color = vec4(texture(fluid, vec3(pos, 0.0)).xyz, 1.0);
 
 }
